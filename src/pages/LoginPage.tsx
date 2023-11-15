@@ -1,9 +1,15 @@
 import React from 'react';
+import NavBar from './NavBar';
 
 const LoginPage: React.FC = () => {
   return (
+    
     <div>
-      <h1>Welcome to the Homepage!</h1>
+      <NavBar />
+      <div style={{ textAlign: 'center' }}>
+        <h1>Welcome Back!</h1>
+        <p>Enter your username and password to access your account.</p>
+      </div>
     </div>
   );
 };
