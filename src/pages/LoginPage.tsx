@@ -25,12 +25,23 @@ const LoginPage: React.FC = () => {
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
         if (userData.password === password) { 
-          if (userData.role === "author") {
-            navigate('/author');
-          } else {
-            navigate('/LoginPage');
+          switch (userData.role) {
+            case "author":
+              navigate('/author');
+              break;
+            case "reviewer":
+              navigate('/reviewer');
+              break;
+            case "chair":
+              navigate('/chair');
+              break;
+            case "admin":
+              navigate('/admin');
+              break;
+            default:
+              navigate('/LoginPage'); // Default route if role doesn't match any case
           }
-        } else {
+        }else {
           console.error("Incorrect password");
           setSnackbar({ open: true, message: 'Incorrect password' });
         }
