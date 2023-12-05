@@ -1,12 +1,12 @@
 import React from 'react';
 import NavBar from './NavBar';
 
-const SystemAdminPage: React.FC = () => {
+const AuthorPage: React.FC = () => {
   return (
     <div>
       <NavBar />
       <div style={{ textAlign: 'center', maxWidth: '500px', margin: 'auto' }}>
-        <h1>System Admin Page!</h1>
+        <h1>Author Page!</h1>
         <p>Enter your username and password to access your account.</p>
 
         <form>
@@ -58,4 +58,4 @@ const SystemAdminPage: React.FC = () => {
   );
 };
 
-export default SystemAdminPage;
+export default AuthorPage;
