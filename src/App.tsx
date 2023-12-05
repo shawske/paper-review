@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import SystemAdminPage from './pages/SystemAdminPage';
 import AuthorPage from './pages/AuthorPage';
 import ReviewerPage from './pages/ReviewerPage';
+import ConferenceChairPage from './pages/ConferenceChairPage';
 import './NavBar.css';
 
 const App: React.FC = () => {
@@ -14,6 +15,7 @@ const App: React.FC = () => {
         <Route path="/admin" element={<SystemAdminPage />} />
         <Route path="/author" element={<AuthorPage />} />
         <Route path="/reviewer" element={<ReviewerPage />} />
+        <Route path="/chair" element={<ConferenceChairPage />} />
       </Routes>
     </Router>
   );
