@@ -6,7 +6,7 @@ const SystemAdminPage: React.FC = () => {
     <div>
       <NavBar />
       <div style={{ textAlign: 'center', maxWidth: '500px', margin: 'auto' }}>
-        <h1>Welcome back!</h1>
+        <h1>Welcome back You loser!</h1>
         <p>Enter your username and password to access your account.</p>
 
         <form>
