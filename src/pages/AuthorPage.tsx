@@ -1,60 +1,81 @@
 import React from 'react';
 import NavBar from './NavBar';
+import {useState, useEffect} from 'react';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../data/firebase';
+
+type ConferenceData = {
+  id: string;
+  name: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  submissionDeadline: string;
+};
 
 const AuthorPage: React.FC = () => {
+
+  const [conferences, setConferences] = useState<ConferenceData[]>([]);
+  const [selectedConference, setSelectedConference] = useState<ConferenceData | null>(null);
+
+  useEffect(() => {
+    const fetchConferences = async () => {
+      const conferenceCollectionRef = collection(db, "Conference");
+      const querySnapshot = await getDocs(conferenceCollectionRef);
+    
+      const fetchedConferences = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          name: data.name,
+          location: data.location,
+          // Convert Timestamp to Date and format as a string
+          startDate: data.startDate.toDate().toLocaleDateString(),
+          endDate: data.endDate.toDate().toLocaleDateString(),
+          submissionDeadline: data.submissionDeadline.toDate().toLocaleDateString(),
+        };
+      }) as ConferenceData[];
+    
+      setConferences(fetchedConferences);
+    };
+    fetchConferences();
+  }, []);
+
   return (
     <div>
-      <NavBar />
-      <div style={{ textAlign: 'center', maxWidth: '500px', margin: 'auto' }}>
-        <h1>Author Page!</h1>
-        <p>Enter your username and password to access your account.</p>
-
-        <form>
-          <div style={{ marginBottom: '1em' }}>
-            <input type="text" placeholder="Username" style={{ width: '100%', padding: '10px' }} />
+    <NavBar />
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+      <div style={{ width: '250px', marginRight: '20px' }}>
+        <h3>Conferences</h3>
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
+          {conferences.map((conference) => (
+            <li key={conference.id} style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', marginBottom: '5px' }}
+                onClick={() => setSelectedConference(conference)}>
+              {conference.name}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+          {selectedConference && (
+            <div style={{
+              border: '1px solid #ccc',
+              padding: '20px',
+              width: 'fit-content', // Use a specific width if you want to set the width of the box
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center' // This centers the content horizontally inside the InfoBox
+            }}>
+            <h3>{selectedConference.name}</h3>
+            <p>Location: {selectedConference.location}</p>
+            <p>Start Date: {selectedConference.startDate}</p>
+            <p>End Date: {selectedConference.endDate}</p>
+            <p>Submission Deadline: {selectedConference.submissionDeadline}</p>
           </div>
-          <div style={{ marginBottom: '1em' }}>
-            <input type="password" placeholder="Password" style={{ width: '100%', padding: '10px' }} />
-          </div>
-          <div style={{ marginBottom: '1em' }}>
-            <button 
-              type="submit" 
-              disabled 
-              style={{ width: '100%', padding: '10px', backgroundColor: 'black', color: 'white', border: 'none' }}
-            >
-              Sign in
-            </button>
-          </div>
-        </form>
-
-        <div style={{ margin: '1em 0' }}>
-          <a href="#" onClick={(e) => e.preventDefault()}>Forgot your password?</a>
-        </div>
-
-        <div style={{ borderTop: '1px solid #ccc', paddingTop: '1em', margin: '1em 0' }}>
-          <span>or continue with</span>
-        </div>
-
-        <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '1em' }}>
-          <button 
-            disabled 
-            style={{ padding: '10px', flexGrow: 1, marginRight: '5px', backgroundColor: 'black', color: 'white', border: 'none' }}
-          >
-            Google
-          </button>
-          <button 
-            disabled 
-            style={{ padding: '10px', flexGrow: 1, marginLeft: '5px', backgroundColor: 'black', color: 'white', border: 'none' }}
-          >
-            Facebook
-          </button>
-        </div>
-
-        <div>
-          Don't have an account? <a href="#" onClick={(e) => e.preventDefault()}>Register</a>
-        </div>
+        )}
       </div>
     </div>
+  </div>
   );
 };
 
