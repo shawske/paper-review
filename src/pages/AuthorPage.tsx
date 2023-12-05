@@ -41,11 +41,16 @@ const AuthorPage: React.FC = () => {
     fetchConferences();
   }, []);
 
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    // Handle the submit action here
+  };
+
   return (
     <div>
     <NavBar />
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-      <div style={{ width: '250px', marginRight: '20px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-around', padding: '20px', maxWidth: '1200px', margin: 'auto' }}>
+      <div style={{ width: '250px', padding: '0 20px' }}>
         <h3>Conferences</h3>
         <ul style={{ listStyleType: 'none', padding: 0 }}>
           {conferences.map((conference) => (
@@ -56,27 +61,59 @@ const AuthorPage: React.FC = () => {
           ))}
         </ul>
       </div>
-      <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-          {selectedConference && (
+        {selectedConference && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '500px' }}>
             <div style={{
               border: '1px solid #ccc',
               padding: '20px',
-              width: 'fit-content', // Use a specific width if you want to set the width of the box
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center' // This centers the content horizontally inside the InfoBox
+              marginBottom: '20px',
+              width: '100%' // Adjust the width as necessary
             }}>
-            <h3>{selectedConference.name}</h3>
-            <p>Location: {selectedConference.location}</p>
-            <p>Start Date: {selectedConference.startDate}</p>
-            <p>End Date: {selectedConference.endDate}</p>
-            <p>Submission Deadline: {selectedConference.submissionDeadline}</p>
+              <h3>{selectedConference.name}</h3>
+              <p>Location: {selectedConference.location}</p>
+              <p>Start Date: {selectedConference.startDate}</p>
+              <p>End Date: {selectedConference.endDate}</p>
+              <p>Submission Deadline: {selectedConference.submissionDeadline}</p>
+            </div>
+            <form style={{
+              border: '1px solid #ccc',
+              padding: '20px',
+              width: '100%' // Adjust the width as necessary
+            }} onSubmit={handleSubmit}>
+              <h3>Submit Paper</h3>
+              <input
+                type="text"
+                placeholder="Title"
+                style={{ margin: '10px 0', padding: '5px', width: '100%' }}
+              />
+              {/* Co-author input fields */}
+              {Array.from({ length: 3 }, (_, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  placeholder={`Co-Author ${index + 1}`}
+                  style={{ margin: '10px 0', padding: '5px', width: '100%' }}
+                />
+              ))}
+              {/* File input */}
+              <label style={{ margin: '10px 0', alignSelf: 'flex-start' }}>
+                Paper:
+                <input
+                  type="file"
+                  style={{ margin: '10px 0', padding: '5px' }}
+                />
+              </label>
+              {/* Submit button */}
+              <button type="submit" style={{ padding: '10px 20px', margin: '10px 0' }}>
+                Submit
+              </button>
+            </form>
           </div>
         )}
       </div>
     </div>
-  </div>
   );
-};
+ }
+  
 
 export default AuthorPage;
