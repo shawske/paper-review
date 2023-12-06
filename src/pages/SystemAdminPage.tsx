@@ -23,7 +23,7 @@ const SystemAdminPage: React.FC = () => {
   useEffect(() => {
     const fetchConference = async () => {
       const conferenceCollectionRef = collection(db, "Conference");
-      // Adjust the query as needed, here it's set to fetch the first conference
+     
       const q = query(conferenceCollectionRef, orderBy("startDate", "desc"), limit(1));
       const querySnapshot = await getDocs(q);
 
@@ -37,8 +37,7 @@ const SystemAdminPage: React.FC = () => {
           endDate: data.endDate.toDate().toLocaleDateString(),
           submissionDeadline: data.submissionDeadline.toDate().toLocaleDateString(),
         };
-      })[0]; // Get the first conference
-
+      })[0]; 
       setConference(fetchedConference);
     };
 

@@ -49,7 +49,7 @@ const AuthorStatusPage: React.FC = () => {
       case 'Published':
         return 'green';
       default:
-        return 'white'; // Default color for unknown status
+        return 'white'; 
     }
   };
 

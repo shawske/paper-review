@@ -36,7 +36,6 @@ const AuthorPage: React.FC = () => {
           id: doc.id,
           name: data.name,
           location: data.location,
-          // Convert Timestamp to Date and format as a string
           startDate: data.startDate.toDate().toLocaleDateString(),
           endDate: data.endDate.toDate().toLocaleDateString(),
           submissionDeadline: data.submissionDeadline.toDate().toLocaleDateString(),
@@ -86,7 +85,7 @@ const AuthorPage: React.FC = () => {
   return (
     <div>
     <NavBar />
-    <div style={{ textAlign: 'right', padding: '10px 20px' }}> {/* Add container for the button */}
+    <div style={{ textAlign: 'right', padding: '10px 20px' }}>
         <button onClick={() => navigate('/status')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
           View Previous Submissions
         </button>

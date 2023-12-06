@@ -39,7 +39,7 @@ const LoginPage: React.FC = () => {
               navigate('/admin');
               break;
             default:
-              navigate('/LoginPage'); // Default route if role doesn't match any case
+              navigate('/LoginPage'); 
           }
         }else {
           console.error("Incorrect password");

@@ -33,7 +33,7 @@ useEffect(() => {
       return {
         id: doc.id,
         title: data.title,
-        submissionDate: data.submissionDate.toDate().toLocaleDateString(), // Adjust if the format needs to be changed
+        submissionDate: data.submissionDate.toDate().toLocaleDateString(), 
         status: data.status,
         authors: data.authors,
       };
@@ -47,7 +47,6 @@ useEffect(() => {
 
 const handleSubmissionClick = (submission: PaperSubmission) => {
   setSelectedSubmission(submission);
-  // Reset recommendation and comments whenever a new submission is selected
   setRecommendation('recommended');
   setComments('');
 };
@@ -57,7 +56,7 @@ const handleSubmitReview = async () => {
     const reviewData = {
       comments: comments,
       recommendation: recommendation,
-      reviewDate: new Date().toISOString(), // or use Firebase server timestamp
+      reviewDate: new Date().toISOString(), 
       reviewerID: userID,
       submissionID: selectedSubmission.id,
     };
@@ -65,7 +64,6 @@ const handleSubmitReview = async () => {
     try {
       await addDoc(collection(db, "Review"), reviewData);
       alert('Review submitted successfully!');
-      // Reset or handle the UI post submission
     } catch (error) {
       console.error('Error writing document: ', error);
       alert('Failed to submit review.');

@@ -14,7 +14,7 @@ type PaperSubmission = {
 };
 type Reviewer = {
   id: string;
-  username: string; // Add other relevant fields as needed
+  username: string; 
 };
 
 const ConferenceChairPage: React.FC = () => {
@@ -64,7 +64,7 @@ const handleReviewerChange = (reviewerNumber: string, reviewerId: string) => {
         return {
           id: doc.id,
           title: data.title,
-          submissionDate: data.submissionDate.toDate().toLocaleDateString(), // Adjust if the format needs to be changed
+          submissionDate: data.submissionDate.toDate().toLocaleDateString(),
           status: data.status,
           authors: data.authors,
         };
