@@ -114,57 +114,67 @@ const ChairStatusPage: React.FC = () => {
         updateSubmissionStatus("Not Published");
       };
 
-  return (
-    <div>
-      <NavBar />
-      <div style={{ textAlign: 'right', padding: '10px 20px' }}>
-        <button onClick={() => navigate('/chair')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-          Approve Another Conference
-        </button>
-      </div>
-      <div style={{ display: 'flex', padding: '20px', maxWidth: '1200px', margin: 'auto' }}>
-        <div style={{ flex: 1, padding: '0 20px' }}>
-          <h3>Submissions</h3>
-          <ul style={{ listStyleType: 'none', padding: 0 }}>
-            {submissions.map((submission) => (
-              <li key={submission.id} style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', marginBottom: '5px' }}
-                  onClick={() => handleSubmissionClick(submission)}>
-                <p>{submission.title}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-        {selectedSubmission && (
-        <div style={{ flex: 2, border: '1px solid #ccc', padding: '20px', marginLeft: '20px', alignSelf: 'start' }}>
-          <h3>Submission Details</h3>
-          <p>Title: {selectedSubmission.title}</p>
-          <p>Submission Date: {selectedSubmission.submissionDate}</p>
-          <p>Authors: {selectedSubmission.authors.join(', ')}</p>
-          <div style={{ marginTop: '20px', padding: '10px', backgroundColor: getStatusColor(selectedSubmission.status) }}>
-              <p>Status: {selectedSubmission.status}</p>
+      return (
+        <div>
+          <NavBar />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: '1200px', margin: 'auto' }}>
+            {/* Control buttons at the top right */}
+            <div style={{ alignSelf: 'flex-end', marginBottom: '20px' }}>
+              <button onClick={() => navigate('/chair')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
+                Approve Another Conference
+              </button>
             </div>
-          <h4>Reviews</h4>
-          {reviews.map((review, index) => (
-            <div key={index}>
-              <p>Reviewer: {review.reviewerName}</p>
-              <p>Comments: {review.comments}</p>
-              <p>Recommendation: {review.recommendation}</p>
+    
+            {/* Main content area */}
+            <div style={{ display: 'flex', width: '100%', gap: '20px' }}>
+              {/* Submissions list */}
+              <div style={{ width: '30%', backgroundColor: '#f2f2f2', padding: '20px', borderRadius: '8px' }}>
+                <h3 style={{ borderBottom: '2px solid black', paddingBottom: '10px' }}>Submitted Papers</h3>
+                {submissions.map((submission) => (
+                  <div key={submission.id} onClick={() => handleSubmissionClick(submission)}
+                    style={{ cursor: 'pointer', padding: '10px', backgroundColor: selectedSubmission?.id === submission.id ? '#d9edf7' : 'transparent', marginBottom: '5px', borderRadius: '4px' }}>
+                    <p>{submission.title}</p>
+                  </div>
+                ))}
+              </div>
+    
+              {/* Submission details and review information */}
+              {selectedSubmission && (
+                <div style={{ width: '70%', backgroundColor: '#f2f2f2', padding: '20px', borderRadius: '8px' }}>
+                  <div style={{ borderBottom: '2px solid black', paddingBottom: '10px', marginBottom: '20px' }}>
+                    <h3>{selectedSubmission.title}</h3>
+                    <p><strong>Submission Date:</strong> {selectedSubmission.submissionDate}</p>
+                    <p><strong>Authors:</strong> {selectedSubmission.authors.join(', ')}</p>
+                    <div style={{ marginTop: '20px', padding: '10px', backgroundColor: getStatusColor(selectedSubmission.status), textAlign: 'center' }}>
+                      <p>Status: {selectedSubmission.status}</p>
+                    </div>
+                  </div>
+    
+                  <h4>Reviews</h4>
+                  {reviews.map((review, index) => (
+                    <div key={index} style={{ marginBottom: '10px', padding: '10px', backgroundColor: '#e9e9e9', borderRadius: '4px' }}>
+                      <p><strong>Reviewer {index + 1}:</strong> {review.reviewerName}</p>
+                      <p><strong>Comments:</strong> {review.comments}</p>
+                      <p><strong>Recommendation:</strong> {review.recommendation}</p>
+                    </div>
+                  ))}
+    
+                  {/* Approve and Deny buttons */}
+                  <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                    <button onClick={handleApprove} style={{ marginRight: '10px', padding: '10px 20px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                      Approve
+                    </button>
+                    <button onClick={handleDeny} style={{ padding: '10px 20px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                      Deny
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-            
-          ))}
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-            <button onClick={handleApprove} style={{ marginRight: '10px', padding: '10px 20px' }}>
-              Approve
-            </button>
-            <button onClick={handleDeny} style={{ padding: '10px 20px' }}>
-              Deny
-            </button>
           </div>
         </div>
-      )}
-      </div>
-    </div>
-  );
-};
+      );
+    };
+    
 
 export default ChairStatusPage;
