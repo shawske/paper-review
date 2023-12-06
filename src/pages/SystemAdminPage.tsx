@@ -52,52 +52,44 @@ const SystemAdminPage: React.FC = () => {
 
   return (
     <div>
-    <NavBar />
-    <div style={{ display: 'flex', justifyContent: 'space-around', padding: '20px', maxWidth: '1200px', margin: 'auto' }}>
-      {conference && (
-        <div style={{ width: '250px', padding: '0 20px' }}>
-          <h3>Conference Request</h3>
-          <ul style={{ listStyleType: 'none', padding: 0 }}>
-            <li key={conference.id} style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', marginBottom: '5px' }}
-                onClick={() => setSelectedConference(conference)}>
-              {conference.name}
-            </li>
-          </ul>
-        </div>
-      )}
-        {selectedConference && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '500px' }}>
-            <div style={{
-              border: '1px solid #ccc',
-              padding: '20px',
-              marginBottom: '20px',
-              width: '100%'
-            }}>
-              <h3>{selectedConference.name}</h3>
-              <p>Location: {selectedConference.location}</p>
-              <p>Start Date: {selectedConference.startDate}</p>
-              <p>End Date: {selectedConference.endDate}</p>
-              <p>Submission Deadline: {selectedConference.submissionDeadline}</p>
-              <h2>Conference Chair Information</h2>
-              <p>First Name: {'Joe'}</p>
-              <p>Last Name: {'Louis'}</p>
-              <p>Title: {'Captain'}</p>
-              <p>Affiliation: {'Red Wings'}</p>
-              <p>Email: {'JoeyL@gmail.com'}</p>
+      <NavBar />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: '1200px', margin: 'auto' }}>
+        {/* Conference request */}
+        <div style={{ display: 'flex', width: '100%', gap: '20px', marginTop: '20px' }}>
+          {conference && (
+            <div style={{ width: '100%', backgroundColor: '#f2f2f2', padding: '20px', borderRadius: '8px' }}>
+              <h3>Conference Request</h3>
+              <div style={{ borderBottom: '2px solid black', paddingBottom: '10px', marginBottom: '20px' }}>
+                <h4>{conference.name}</h4>
+                <p><strong>Location:</strong> {conference.location}</p>
+                <p><strong>Start Date:</strong> {conference.startDate}</p>
+                <p><strong>End Date:</strong> {conference.endDate}</p>
+                <p><strong>Submission Deadline:</strong> {conference.submissionDeadline}</p>
+                {/* Sample conference chair information */}
+                <h4>Conference Chair Information</h4>
+                <p>First Name: Joe</p>
+                <p>Last Name: Louis</p>
+                <p>Title: Captain</p>
+                <p>Affiliation: Red Wings</p>
+                <p>Email: JoeyL@gmail.com</p>
+              </div>
+              
+              {/* Approve and Deny buttons */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                <button onClick={navigateToLogin} style={{ padding: '10px 20px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                  Approve
+                </button>
+                <button onClick={navigateToLogin} style={{ padding: '10px 20px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                  Deny
+                </button>
+              </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-            <button onClick={navigateToLogin} style={{ marginRight: '10px', padding: '10px 20px' }}>
-              Approve
-            </button>
-            <button onClick={navigateToLogin} style={{ padding: '10px 20px' }}>
-              Deny
-            </button>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
-</div>
   );
 };
+
 
 export default SystemAdminPage;

@@ -84,78 +84,75 @@ const AuthorPage: React.FC = () => {
 
   return (
     <div>
-    <NavBar />
-    <div style={{ textAlign: 'right', padding: '10px 20px' }}>
-        <button onClick={() => navigate('/status')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-          View Previous Submissions
-        </button>
-      </div>
-    <div style={{ display: 'flex', justifyContent: 'space-around', padding: '20px', maxWidth: '1200px', margin: 'auto' }}>
-      <div style={{ width: '250px', padding: '0 20px' }}>
-        <h3>Conferences</h3>
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
-          {conferences.map((conference) => (
-            <li key={conference.id} style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', marginBottom: '5px' }}
-                onClick={() => setSelectedConference(conference)}>
-              {conference.name}
-            </li>
-          ))}
-        </ul>
-      </div>
-        {selectedConference && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '500px' }}>
-            <div style={{
-              border: '1px solid #ccc',
-              padding: '20px',
-              marginBottom: '20px',
-              width: '100%'
-            }}>
-              <h3>{selectedConference.name}</h3>
-              <p>Location: {selectedConference.location}</p>
-              <p>Start Date: {selectedConference.startDate}</p>
-              <p>End Date: {selectedConference.endDate}</p>
-              <p>Submission Deadline: {selectedConference.submissionDeadline}</p>
-            </div>
-            <form style={{
-              border: '1px solid #ccc',
-              padding: '20px',
-              width: '100%' 
-            }} onSubmit={handleSubmit}>
-              <h3>Submit Paper</h3>
-              <input
-                type="text"
-                placeholder="Title"
-                value={title}
-                onChange={handleTitleChange}
-              />
-              {authors.map((author, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  placeholder={`Co-Author ${index + 1}`}
-                  value={author}
-                  onChange={handleAuthorChange(index)}
-                />
-              ))}
-              {/* File input */}
-              <label style={{ margin: '10px 0', alignSelf: 'flex-start' }}>
-                Paper:
-                <input
-                  type="file"
-                  style={{ margin: '10px 0', padding: '5px' }}
-                />
-              </label>
-              {/* Submit button */}
-              <button type="submit" style={{ padding: '10px 20px', margin: '10px 0' }}>
-                Submit
-              </button>
-            </form>
+      <NavBar />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: '1200px', margin: 'auto' }}>
+        {/* Control buttons at the top right */}
+        <div style={{ alignSelf: 'flex-end', marginBottom: '20px' }}>
+          <button onClick={() => navigate('/status')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
+            View Previous Submissions
+          </button>
+        </div>
+
+        {/* Main content area */}
+        <div style={{ display: 'flex', width: '100%', gap: '20px' }}>
+          {/* Conference list */}
+          <div style={{ width: '30%', backgroundColor: '#f2f2f2', padding: '20px', borderRadius: '8px' }}>
+            <h3 style={{ borderBottom: '2px solid black', paddingBottom: '10px' }}>Conferences</h3>
+            {conferences.map((conference) => (
+              <div key={conference.id} onClick={() => setSelectedConference(conference)}
+                style={{ cursor: 'pointer', padding: '10px', backgroundColor: selectedConference?.id === conference.id ? '#d9edf7' : 'transparent', marginBottom: '5px', borderRadius: '4px' }}>
+                <p>{conference.name}</p>
+              </div>
+            ))}
           </div>
-        )}
+
+          {/* Paper submission form */}
+          {selectedConference && (
+            <div style={{ width: '70%', backgroundColor: '#f2f2f2', padding: '20px', borderRadius: '8px' }}>
+              <div style={{ borderBottom: '2px solid black', paddingBottom: '10px', marginBottom: '20px' }}>
+                <h3>{selectedConference.name}</h3>
+                <p><strong>Location:</strong> {selectedConference.location}</p>
+                <p><strong>Start Date:</strong> {selectedConference.startDate}</p>
+                <p><strong>End Date:</strong> {selectedConference.endDate}</p>
+                <p><strong>Submission Deadline:</strong> {selectedConference.submissionDeadline}</p>
+              </div>
+
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={title}
+                  onChange={handleTitleChange}
+                  style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+                />
+                {authors.map((author, index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    placeholder={`Co-Author ${index + 1}`}
+                    value={author}
+                    onChange={handleAuthorChange(index)}
+                    style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+                  />
+                ))}
+                <label style={{ alignSelf: 'flex-start', marginTop: '20px' }}>
+                  Paper:
+                  <input
+                    type="file"
+                    style={{ margin: '10px 0', padding: '5px' }}
+                  />
+                </label>
+                <button type="submit" style={{ padding: '10px 20px', borderRadius: '4px', border: 'none', backgroundColor: '#4CAF50', color: 'white', cursor: 'pointer', marginTop: '10px' }}>
+                  Submit
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
- }
+}
   
 
 export default AuthorPage;
