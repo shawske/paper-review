@@ -50,11 +50,11 @@ const ChairStatusPage: React.FC = () => {
   
       const handleSubmissionClick = async (submission: PaperSubmission) => {
         setSelectedSubmission(submission);
-    
+      
         const reviewsCollectionRef = collection(db, "Review");
         const q = query(reviewsCollectionRef, where("submissionID", "==", submission.id));
         const querySnapshot = await getDocs(q);
-    
+      
         const fetchedReviews = querySnapshot.docs.map(doc => {
           const data = doc.data();
           return {
@@ -63,21 +63,55 @@ const ChairStatusPage: React.FC = () => {
             recommendation: data.recommendation,
           };
         }) as Review[];
-    
+      
         setReviews(fetchedReviews);
+      
+        // Logic to determine the final recommendation status
+        const recommendations = fetchedReviews.map(review => review.recommendation);
+        const recommendCount = recommendations.filter(r => r === "recommended").length;
+        const doNotRecommendCount = recommendations.filter(r => r === "not recommended").length;
+      
+        let finalStatus = 'Pending';
+        if (recommendCount === 3) {
+          finalStatus = 'Publish';
+        } else if (doNotRecommendCount >= 2) {
+          finalStatus = 'Do Not Publish';
+        }
+      
+        // Update the selected submission status locally
+        if (selectedSubmission) {
+          setSelectedSubmission({ ...selectedSubmission, status: finalStatus });
+        }
       };
 
       const getStatusColor = (status: string) => {
         switch (status) {
           case 'Pending':
             return 'grey';
-          case 'Not Published':
+          case 'Do Not Publish':
             return 'red';
-          case 'Published':
+          case 'Publish':
             return 'green';
           default:
             return 'white'; // Default color for unknown status
         }
+      };
+      const updateSubmissionStatus = async (newStatus: string) => {
+        if (selectedSubmission) {
+          const submissionRef = doc(db, "PaperSubmission", selectedSubmission.id);
+          await updateDoc(submissionRef, { status: newStatus });
+    
+          // Update the local state to reflect the change
+          setSelectedSubmission({ ...selectedSubmission, status: newStatus });
+        }
+      };
+    
+      const handleApprove = () => {
+        updateSubmissionStatus("Published");
+      };
+    
+      const handleDeny = () => {
+        updateSubmissionStatus("Not Published");
       };
 
   return (
@@ -118,6 +152,14 @@ const ChairStatusPage: React.FC = () => {
             </div>
             
           ))}
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            <button onClick={handleApprove} style={{ marginRight: '10px', padding: '10px 20px' }}>
+              Approve
+            </button>
+            <button onClick={handleDeny} style={{ padding: '10px 20px' }}>
+              Deny
+            </button>
+          </div>
         </div>
       )}
       </div>
