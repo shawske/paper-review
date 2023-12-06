@@ -29,7 +29,7 @@ const AuthorStatusPage: React.FC = () => {
         return {
           id: doc.id,
           title: data.title,
-          submissionDate: data.submissionDate.toDate().toLocaleDateString(), // Adjust if the format needs to be changed
+          submissionDate: data.submissionDate.toDate().toLocaleDateString(), 
           status: data.status,
           authors: data.authors,
         };
