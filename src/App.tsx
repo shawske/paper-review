@@ -7,6 +7,7 @@ import ReviewerPage from './pages/ReviewerPage';
 import ConferenceChairPage from './pages/ConferenceChairPage';
 import './NavBar.css';
 import AuthorStatusPage from './pages/AuthorStatusPage';
+import ChairStatusPage from './pages/ChairStatusPage';
 
 const App: React.FC = () => {
   return (
@@ -17,7 +18,8 @@ const App: React.FC = () => {
         <Route path="/author" element={<AuthorPage />} />
         <Route path="/reviewer" element={<ReviewerPage />} />
         <Route path="/chair" element={<ConferenceChairPage />} />
-        <Route path="/status" element={<AuthorStatusPage />} />
+        <Route path="/status" element={<AuthorStatusPage />}  />
+        <Route path="/chairstatus" element={<ChairStatusPage />} />
       </Routes>
     </Router>
   );

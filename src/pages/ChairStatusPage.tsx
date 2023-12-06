@@ -17,7 +17,7 @@ type Reviewer = {
   username: string; // Add other relevant fields as needed
 };
 
-const ConferenceChairPage: React.FC = () => {
+const ChairStatusPage: React.FC = () => {
 
 
 
@@ -93,8 +93,8 @@ const handleReviewerChange = (reviewerNumber: string, reviewerId: string) => {
     <div>
       <NavBar />
       <div style={{ textAlign: 'right', padding: '10px 20px' }}>
-        <button onClick={() => navigate('/chairstatus')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-          Check Status on Papers
+        <button onClick={() => navigate('/author')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
+          Submit Another Paper
         </button>
       </div>
       <div style={{ display: 'flex', padding: '20px', maxWidth: '1200px', margin: 'auto' }}>
@@ -136,4 +136,4 @@ const handleReviewerChange = (reviewerNumber: string, reviewerId: string) => {
   );
 };
 
-export default ConferenceChairPage;
+export default ChairStatusPage;

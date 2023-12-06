@@ -1,9 +1,10 @@
 import React from 'react';
 import NavBar from './NavBar';
 import {useState, useEffect} from 'react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, where } from 'firebase/firestore';
 import { db } from '../data/firebase';
 import { useNavigate } from 'react-router-dom'; 
+import { Timestamp } from 'firebase/firestore'; 
 
 type ConferenceData = {
   id: string;
@@ -19,6 +20,10 @@ const AuthorPage: React.FC = () => {
   const [conferences, setConferences] = useState<ConferenceData[]>([]);
   const [selectedConference, setSelectedConference] = useState<ConferenceData | null>(null);
   const navigate = useNavigate(); 
+  const [title, setTitle] = useState('');
+  const [authors, setAuthors] = useState(['', '', '']); 
+  const [submissionDate, setSubmissionDate] = useState(new Date().toISOString().split('T')[0]); 
+
 
   useEffect(() => {
     const fetchConferences = async () => {
@@ -43,9 +48,39 @@ const AuthorPage: React.FC = () => {
     fetchConferences();
   }, []);
 
-  const handleSubmit = (event: React.FormEvent) => {
+
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+  };
+
+  const handleAuthorChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newAuthors = [...authors];
+    newAuthors[index] = event.target.value;
+    setAuthors(newAuthors);
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    console.log('Submit Button');
     event.preventDefault();
-    // Handle the submit action here
+  
+    
+    const submissionTimestamp = Timestamp.fromDate(new Date(submissionDate));
+  
+    const paperData = {
+      title,
+      authors,
+      submissionDate: submissionTimestamp, 
+      status: 'Pending'
+    };
+  
+    try {
+      const PaperSubmissionRef = collection(db, 'PaperSubmission');
+      await addDoc(PaperSubmissionRef, paperData);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error submitting paper:', error);
+     
+    }
   };
 
   return (
@@ -85,21 +120,22 @@ const AuthorPage: React.FC = () => {
             <form style={{
               border: '1px solid #ccc',
               padding: '20px',
-              width: '100%' // Adjust the width as necessary
+              width: '100%' 
             }} onSubmit={handleSubmit}>
               <h3>Submit Paper</h3>
               <input
                 type="text"
                 placeholder="Title"
-                style={{ margin: '10px 0', padding: '5px', width: '100%' }}
+                value={title}
+                onChange={handleTitleChange}
               />
-              {/* Co-author input fields */}
-              {Array.from({ length: 3 }, (_, index) => (
+              {authors.map((author, index) => (
                 <input
                   key={index}
                   type="text"
                   placeholder={`Co-Author ${index + 1}`}
-                  style={{ margin: '10px 0', padding: '5px', width: '100%' }}
+                  value={author}
+                  onChange={handleAuthorChange(index)}
                 />
               ))}
               {/* File input */}
