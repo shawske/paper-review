@@ -1,100 +1,91 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from './NavBar';
-import {useState, useEffect} from 'react';
 import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../data/firebase';
 import { useNavigate } from 'react-router-dom'; 
 
 type PaperSubmission = {
-  id: string;
-  title: string;
-  submissionDate: string; 
-  status: string;
-  authors: string[]; 
-};
-type Reviewer = {
-  id: string;
-  username: string; // Add other relevant fields as needed
-};
+    id: string;
+    title: string;
+    submissionDate: string; 
+    status: string;
+    authors: string[]; 
+  };
+  
+  type Review = {
+    reviewerName: string;
+    comments: string;
+    recommendation: string;
+  };
 
 const ChairStatusPage: React.FC = () => {
-
-
-
-  const [submissions, setSubmissions] = useState<PaperSubmission[]>([]);
+    const [submissions, setSubmissions] = useState<PaperSubmission[]>([]);
     const [selectedSubmission, setSelectedSubmission] = useState<PaperSubmission | null>(null);
-  const navigate = useNavigate(); 
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const navigate = useNavigate(); 
 
-  const [reviewers, setReviewers] = useState<Reviewer[]>([]);
-  
-  useEffect(() => {
-  const fetchReviewers = async () => {
-    const userCollectionRef = collection(db, "User");
-    const q = query(userCollectionRef, where("role", "==", "reviewer"));
-    const querySnapshot = await getDocs(q);
-  
-    const fetchedReviewers = querySnapshot.docs.map(doc => {
-      const docData = doc.data();
-      return {
-        id: doc.id,
-        username: docData.username, 
-      };
-    });
-    console.log(fetchedReviewers);
-    setReviewers(fetchedReviewers);
-  };
- 
-    fetchReviewers();
+
+
+    useEffect(() => {
+        const fetchSubmissions = async () => {
+          const submissionsCollectionRef = collection(db, "PaperSubmission");
+          const querySnapshot = await getDocs(submissionsCollectionRef);
     
-  }, []); 
-
-  type SelectedReviewers = Record<string, string>;
-  const [selectedReviewers, setSelectedReviewers] = useState<SelectedReviewers>({ reviewer1: '', reviewer2: '', reviewer3: '' });
-const handleReviewerChange = (reviewerNumber: string, reviewerId: string) => {
-  setSelectedReviewers(prev => ({ ...prev, [reviewerNumber]: reviewerId }));
-};
-
-  useEffect(() => {
-    const fetchSubmissions = async () => {
-      const submissionsCollectionRef = collection(db, "PaperSubmission");
-      const querySnapshot = await getDocs(submissionsCollectionRef);
-
-      const fetchedSubmissions = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          title: data.title,
-          submissionDate: data.submissionDate.toDate().toLocaleDateString(), // Adjust if the format needs to be changed
-          status: data.status,
-          authors: data.authors,
+          const fetchedSubmissions = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              title: data.title,
+              submissionDate: data.submissionDate.toDate().toLocaleDateString(),
+              status: data.status,
+              authors: data.authors,
+            };
+          }) as PaperSubmission[];
+    
+          setSubmissions(fetchedSubmissions);
         };
-      }) as PaperSubmission[];
-
-      setSubmissions(fetchedSubmissions);
-    };
-    fetchSubmissions();
-  }, []);
-
- const assignReviewers = async () => {
-  if (selectedSubmission) {
-    const submissionId = selectedSubmission.id;
-    const submissionRef = doc(db, "PaperSubmission", submissionId);
-    
-    await updateDoc(submissionRef, { reviewers: selectedReviewers });
-    alert('Reviewers assigned successfully!');
-  }
-};
+        fetchSubmissions();
+      }, []);
+ 
   
-  const handleSubmissionClick = (submission: PaperSubmission) => {
-    setSelectedSubmission(submission);
-  };
+      const handleSubmissionClick = async (submission: PaperSubmission) => {
+        setSelectedSubmission(submission);
+    
+        const reviewsCollectionRef = collection(db, "Review");
+        const q = query(reviewsCollectionRef, where("submissionID", "==", submission.id));
+        const querySnapshot = await getDocs(q);
+    
+        const fetchedReviews = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            reviewerName: data.reviewerName, // Assuming this field exists
+            comments: data.comments,
+            recommendation: data.recommendation,
+          };
+        }) as Review[];
+    
+        setReviews(fetchedReviews);
+      };
+
+      const getStatusColor = (status: string) => {
+        switch (status) {
+          case 'Pending':
+            return 'grey';
+          case 'Not Published':
+            return 'red';
+          case 'Published':
+            return 'green';
+          default:
+            return 'white'; // Default color for unknown status
+        }
+      };
 
   return (
     <div>
       <NavBar />
       <div style={{ textAlign: 'right', padding: '10px 20px' }}>
-        <button onClick={() => navigate('/author')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-          Submit Another Paper
+        <button onClick={() => navigate('/chair')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
+          Approve Another Conference
         </button>
       </div>
       <div style={{ display: 'flex', padding: '20px', maxWidth: '1200px', margin: 'auto' }}>
@@ -110,27 +101,25 @@ const handleReviewerChange = (reviewerNumber: string, reviewerId: string) => {
           </ul>
         </div>
         {selectedSubmission && (
-  <div style={{ flex: 2, border: '1px solid #ccc', padding: '20px', marginLeft: '20px', alignSelf: 'start' }}>
-    <h3>Submission Details</h3>
-    <p>Title: {selectedSubmission.title}</p>
-    <p>Submission Date: {selectedSubmission.submissionDate}</p>
-    <p>Authors: {selectedSubmission.authors.join(', ')}</p>
-
-    {/* Reviewer Dropdowns */}
-    {[1, 2, 3].map(num => (
-      <div key={num}>
-        <label htmlFor={`reviewer${num}`}>Reviewer {num}: </label>
-        <select id={`reviewer${num}`} value={selectedReviewers[`reviewer${num}`]} onChange={(e) => handleReviewerChange(`reviewer${num}`, e.target.value)}>
-          <option value="">Select Reviewer</option>
-          {reviewers.map(reviewer => (
-            <option key={reviewer.id} value={reviewer.id}>{reviewer.username}</option>
+        <div style={{ flex: 2, border: '1px solid #ccc', padding: '20px', marginLeft: '20px', alignSelf: 'start' }}>
+          <h3>Submission Details</h3>
+          <p>Title: {selectedSubmission.title}</p>
+          <p>Submission Date: {selectedSubmission.submissionDate}</p>
+          <p>Authors: {selectedSubmission.authors.join(', ')}</p>
+          <div style={{ marginTop: '20px', padding: '10px', backgroundColor: getStatusColor(selectedSubmission.status) }}>
+              <p>Status: {selectedSubmission.status}</p>
+            </div>
+          <h4>Reviews</h4>
+          {reviews.map((review, index) => (
+            <div key={index}>
+              <p>Reviewer: {review.reviewerName}</p>
+              <p>Comments: {review.comments}</p>
+              <p>Recommendation: {review.recommendation}</p>
+            </div>
+            
           ))}
-        </select>
-      </div>
-    ))}
-  </div>
-)}
-<button onClick={assignReviewers}>Assign Reviewers</button>
+        </div>
+      )}
       </div>
     </div>
   );
