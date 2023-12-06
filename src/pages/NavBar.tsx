@@ -6,14 +6,11 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Perform any logout logic here
-    // For example, clear user session, etc.
-
     navigate('/');
   };
   return (
     <nav className="navbar">
-      <button className="nav-button disabled" disabled>Home</button>
+      <button className="nav-button" onClick={handleLogout}>Home</button>
       <h1 className="nav-title">Conference Paper Review System</h1>
       <button className="nav-button" onClick={handleLogout}>Logout</button>
     </nav>

@@ -3,6 +3,7 @@ import NavBar from './NavBar';
 import {useState, useEffect} from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../data/firebase';
+import { useNavigate } from 'react-router-dom'; 
 
 type ConferenceData = {
   id: string;
@@ -17,6 +18,7 @@ const AuthorPage: React.FC = () => {
 
   const [conferences, setConferences] = useState<ConferenceData[]>([]);
   const [selectedConference, setSelectedConference] = useState<ConferenceData | null>(null);
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchConferences = async () => {
@@ -49,6 +51,11 @@ const AuthorPage: React.FC = () => {
   return (
     <div>
     <NavBar />
+    <div style={{ textAlign: 'right', padding: '10px 20px' }}> {/* Add container for the button */}
+        <button onClick={() => navigate('/status')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
+          View Previous Submissions
+        </button>
+      </div>
     <div style={{ display: 'flex', justifyContent: 'space-around', padding: '20px', maxWidth: '1200px', margin: 'auto' }}>
       <div style={{ width: '250px', padding: '0 20px' }}>
         <h3>Conferences</h3>
@@ -67,7 +74,7 @@ const AuthorPage: React.FC = () => {
               border: '1px solid #ccc',
               padding: '20px',
               marginBottom: '20px',
-              width: '100%' // Adjust the width as necessary
+              width: '100%'
             }}>
               <h3>{selectedConference.name}</h3>
               <p>Location: {selectedConference.location}</p>
